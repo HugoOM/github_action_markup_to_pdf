@@ -1,0 +1,15 @@
+name: "Markup to PDF"
+description: "Render local markup file and save to PDF"
+inputs:
+  path-to-markup-file:
+    description: "Local path (relative to root) to markup file"
+    required: true
+  branch-name:
+    description: "Name of the current git branch"
+    required: true
+outputs:
+  pdf-file-binary:
+    description: "Binary of the rendered PDF file"
+runs:
+  using: "node12"
+  main: "index.js"
