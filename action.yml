@@ -1,0 +1,15 @@
+name: "Markup to PDF"
+description: "Render local markup file and save to PDF"
+inputs:
+  path-to-markup-file:
+    description: "Local path (relative to root) to markup file"
+    required: true
+outputs:
+  output-pdf-path:
+    description: "Path to the rendered PDF file"
+  branch-name:
+    description: "Parsed name of the current branch"
+runs:
+  using: "node12"
+  pre: "pre.js"
+  main: "index.js"

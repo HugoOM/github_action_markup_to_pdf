@@ -1,0 +1,40 @@
+name: Test
+
+on: [push]
+
+jobs:
+  render_to_pdf:
+    runs-on: ubuntu-latest
+    name: A job to render local markup to PDF
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12"
+      # - name: Install Chromium
+      #   id: chromium
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install chromium-browser -y
+      #     echo "::set-env name=CHROMIUM_PATH::$(which chromium-browser)"
+      # - run: echo $CHROMIUM_PATH
+      # - name: Setup Puppeteer
+      #   id: puppeteer
+      #   run: |
+      #     npm install -g puppeteer
+      #     echo $(which puppeteer)
+      #     echo "::add-path::/opt/hostedtoolcache/node/12.18.3/x64/lib/node_modules/puppeteer"
+      # - run: echo $PUPPETEER_PATH
+      - name: Markup to PDF Step
+        id: markup
+        uses: ./
+        with:
+          path-to-markup-file: "./index.html"
+      - name: Print and Save Results
+        run: |
+          git config --global user.email "github@action.com"
+          git config --global user.name "Github Action Runner"
+          git add -f ./${{ steps.markup.outputs.branch-name }}.pdf
+          git commit --amend --no-edit
+          git push -f
