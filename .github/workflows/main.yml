@@ -1,0 +1,46 @@
+name: Test
+
+on: [push]
+
+jobs:
+  render_to_pdf:
+    runs-on: ubuntu-latest
+    name: A job to render local markup to PDF
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12"
+      - run: |
+          sudo apt-get update
+          sudo apt-get install chromium-browser -y
+          echo $(which chromium-browser)
+          ls /usr/bin/chromium-browser
+      # - run: sudo apt-get install gconf-service libasound2 libatk1.0-0 libatk-bridge2.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
+      # - name: Install Chromium
+      #   id: chromium
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install chromium-browser -y
+      #     echo "::set-env name=CHROMIUM_PATH::$(which chromium-browser)"
+      # - run: echo $CHROMIUM_PATH
+      # - name: Setup Puppeteer
+      #   id: puppeteer
+      #   run: |
+      #     npm install -g puppeteer
+      #     echo $(which puppeteer)
+      #     echo "::add-path::/opt/hostedtoolcache/node/12.18.3/x64/lib/node_modules/puppeteer"
+      # - run: echo $PUPPETEER_PATH
+      - name: Markup to PDF Step
+        id: markup
+        uses: ./
+        with:
+          path-to-markup-file: "./index.html"
+      - name: Print and Save Results
+        run: |
+          git config --global user.email "github@action.com"
+          git config --global user.name "Github Action Runner"
+          git add -f ./${{ steps.markup.outputs.branch-name }}.pdf
+          git commit --amend --no-edit
+          git push -f
